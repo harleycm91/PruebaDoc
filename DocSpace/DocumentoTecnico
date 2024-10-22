@@ -1,0 +1,1097 @@
+# Documentación Técnica de Web Scraping _“Raspado Web”_
+
+Palabras o frases en _"cursiva"_ explicadas en el punto 10.1 del documento.
+
+[Productos Homólogos]: https://docs.google.com/spreadsheets/d/1YxA_B9JGd0nqAZdo2aZMOHCVgpaOho1fA1tz2h6ByuM/edit?usp=sharing
+[Competitividad]: https://docs.google.com/spreadsheets/d/1lbFcSh0hN8B1y9xStQoeCwkXLjTeQBZNEzNAPlSE3CA/edit?usp=drive_link
+
+## 1. Introducción
+
+Este proyecto surgió gracias a la pregunta de cómo obtener los precios de los productos de Construplaza que se comercializan en las demás empresas consideradas _"competencia"_, con el fin de comparar los mismos y de acuerdo a los resultados tomar decisiones estratégicas.
+
+Se desarrolló este proyecto para poseer un cuadro comparativo con los _"precios del mercado"_ para calcular sus diferencias y en base a ellas realizar el análisis respectivo.
+
+Para lograr el éxito de este proyecto se adquirió una suscripción del plan Estándar del software llamado [Octoparse](https://www.octoparse.es/) que permite el _"raspado de información"_ de un sitio web de manera manual o automática sin necesidad de código de programación. 
+
+Además, se escogió un agente de Construplaza que colabora con la búsqueda y obtención de los _"productos homólogos"_ en los sitios web _"competidores"_.
+
+## 2. Descripción del Sistema
+
+### 2.1 Funcionalidades
+
+- **Raspado Web:** Captura de datos específicos de un sitio web.
+- **Exportación de Datos:** Una vez hecho el raspado, los datos obtenidos son exportados para ser analizados en el documento respectivo.
+- **Automatización de ejecuciones:** Se personaliza el horario donde se desee consultar los datos para el raspado web.
+- **Limpieza de Datos:** Periodicamente se consultan los datos por lo que cada vez que se exporte un nuevo lote de datos el documento debió haber eliminado los registros antiguos para recibir los más actualizados.
+- **Ordenamiento de Datos:** Para una detección más fácil de posibles errores que puede haber generado las ejecuciones, despues de cada exportación los datos son ordenados por precio para colocar al final de la hoja los que no se hayan obtenido por medio del raspado web.
+- **Análisis de datos:** Una vez se hayan obtenido todos los datos se ajusta la tabla comparativa de precios para ser analizada por los encargados.
+- **Detección de descuentos:** El precio no es el único determinante de un producto, si este cuenta con algún tipo de rebaja o descuento debe ser considerado.
+
+### 2.2 Requisitos del Sistema
+
+Especificaciones de hardware y software necesarias:
+
+- Conexión a Internet.
+- Preferiblemente utilizar laptop o computador.
+- Descargar [Octoparse](https://www.octoparse.es/download) disponible para Mac o Windows.
+- Credenciales para iniciar sesión a la cuenta de Octoparse de Construplaza (`octoparse@construplaza.com`).
+- Cuenta de Google activa con acceso compartido a las hojas de cálculo respectivas [Competitividad][Competitividad] y [Productos Homólogos][Productos Homólogos].
+
+### 2.3 Arquitectura del Sistema
+
+#### 2.3.1 Componentes principales
+
+Descripción básica de los componentes que conforman el proyecto:
+
+- Software de Octoparse:
+    - **Detalles de la Cuenta:** Sección para gestionar la suscripción del plan y la información de la cuenta.
+    - **Nuevo:** Bloque que permite la creación de una tarea, una plantilla, importar una tarea o crear un nuevo grupo.
+    - **Dashboard:** Módulo donde se visualizan y configuran todas las tareas creadas. Acá es donde se trabaja. Cada tarea tiene 2 líneas y 6 columnas, la línea superior hace referencia a todo lo relacionado a las ejeciones **en la nube** y la línea inferior a las ejecuciones **locales**.
+    - **Plantillas:** Sección que ofrece Octoparse de plantillas disponibles para obtener información de sitios populares.
+    - **Herramientas:** Bloque que muestra las herramientas disponibles para utilizarlas en las tareas.
+    - **Precio:** Módulo que dirige a la página oficial para visualizar el costo de los planes disponibles.
+    - **RPA:** Por sus siglas en inglés equivale a la Automatización Robótica de Procesos, es un software aparte que ofrece funcionalidades más profundas para otro tipo de necesidades.
+    - **Referral:** Sección que brinda Octoparse para ganar una comisión a cambio de referir a un nuevo usuario de pago.
+    - **Mensaje:** Bloque donde se visualizan los mensajes y/o notificaciones de parte del equipo de soporte de la plataforma.
+    - **Ayuda:** Módulo que ofrece la plataforma para brindar información relevante como tutoriales, tips y comentarios.
+    - **Configuración:** Sección para configurar los ajustes generales de la plataforma, como lo son las tareas, el idioma y actualización del software.
+
+- Hoja de Cálculo "Competitividad":
+    - ***Pestaña de cuadro comparativo:** Tabla totalmente configurada de manera que cada celda obtenga y muestre el dato respectivo según se necesite. Permite ser filtrada para un análisis detallado.
+    - ***Pestaña de productos homólogos:** Copia oficial y normalizada de la tabla de productos homólogos desarrollada en la segunda hoja de cálculo que se utiliza.
+    - ***Pestañas de cada competencia:** Se tiene una pestaña por cada competidor, incluyendo a Construplaza, cada una de estas almacena los datos de los productos obtenidos por medio del raspado web de cada sitio agregado. Entre ellos, el código, el nombre, el precio, la fecha y hora en la que se consultó, el URL y la etiqueta que muestren.
+
+- Hoja de Cálculo "Productos Homólogos":
+    - ***Pestaña de productos homólogos:** Tabla utilizada como matriz donde cada producto de Construplaza es una fila y cada competencia es una columna. Está conformada por los enlaces de cada sitio web, incluyendo Construplaza, su función es relacionar los productos homólogos que cada producto tenga.
+    - ***Pestaña de enlaces agrupados por competencia:** Es llamada "Ordenados A-Z", acá se toman todos los enlaces agregados en la pestaña anterior y se agrupan por competencia para ser copiados y pegados en la tarea respectiva de Octoparse.
+    - ***Pestaña de enlaces por corregir:** Ciertos enlaces de algunas competencias suelen cambiar por lo que se utiliza esta pestaña para llevar el seguimiento de cuales deben ser corregidos o eliminados.
+    - ***Pestaña para comparación de enlaces faltantes:** No siempre se obtiene la totalidad de los productos de una competencia después de cada ejecución, esto debido a que pueden ocurrir fallos, por lo que se utiliza esta pestaña para comparar la lista total versus la lista del resultado para obtener los enlaces de los productos que hicieron falta de consultar.
+
+#### 2.3.2 Diagrama de flujo
+
+![Diagrama de Flujo](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/DiagramaFlujo.drawio.png)
+
+#### 2.3.3 Interacción entre servicios externos o internos
+
+Para unir las piezas y lograr los objetivos del proyecto fue necesario implementar los siguientes servicios de Google explicados a continuación:
+
+- **Google Cloud:** Se utiliza para exportar automáticamente los datos de las tareas desarrolladas en Octoparse a las respectivas pestañas de la hoja de cálculo creada. Esto se logró por medio del siguiente tutorial ["Exportar datos a Google Sheets"](https://helpcenter.octoparse.com/es/articles/6696879-exportar-datos-a-google-sheets).
+- **Google AppScript:** Es utilizado en la hoja de cálculo llamada Competitividad para limpiar automáticamente los registros de las pestañas por medio de un _"trigger"_ basado en un horario, cuando este se cumpla, los registros antiguos son borrados y los datos nuevos podrán ser almacenados sin problema.
+
+## 3. Especificaciones Técnicas
+
+### 3.1 Lenguajes de Programación
+
+- **JavaScript:** Utilizado en la extensión de AppScript de la hoja de cálculo, segmentos de código explicados explícitamente a partir del punto 5.1 de este documento.
+
+### 3.2 Herramientas y Tecnologías
+
+Lista de herramientas y tecnologías aplicadas:
+
+- **Google Sheets:** Hojas de cálculo de Google para la gestión y almacenamiento de los datos.
+- **Octoparse:** Herramienta de software que permite el raspado web de los datos mostrados en un sitio web.
+    
+### 3.3 Base de Datos
+
+No utiliza un motor de base datos, los datos son obtenidos de los sitios web y los enlaces son almacenados en la hoja de cálculo llamada "Productos Homólogos".
+
+## 4. Diseño del Sistema
+
+### 4.1 Diagrama Entidad-Relación
+
+![Diagrama Entidad - Relación](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/EntidadRelacion.drawio.png)
+
+### 4.2 Wireframes de la interfaz de usuario
+
+[Ver en el Proyecto de Figma](https://www.figma.com/design/1lGgiYbnNolFcLRfxYXNBv/Norberth-Fitoria?node-id=0-1&t=TqcopRXlsZg3Oazn-1)
+    
+### 4.3 Flujos de navegación
+
+Cada flujo requiere las especificaciones plasmadas en el punto 2.2 de este documento.
+
+#### 4.3.1 Crear una tarea en Octoparse
+
+1. Se abre Octoparse.
+2. En el módulo de "Nuevo" se selecciona "Modo Avanzado" en esta pestaña se debe colocar el URL o un conjunto de estos y presionar el botón "Guardar".
+3. Seleccionar el dato a obtener del sitio haciendo click en él o por medio del asistente se auto-detecta el sitio.
+4. Cada dato seleccionado es un valor y este crea una columna en la parte inferior, su nombre se cambia para identificarse mejor.
+5. Cada dato que se obtiene del sitio se puede duplicar, suprimir, reformatear, personalizar, cambiar su _"XPath"_, combinarse con otro dato en solo una celda, entre otros. Estas opciones son muy útiles para _"normalizar"_ los datos que se quieren obtener.
+6. Cuando se tengan los datos requeridos se presiona el botón de "Ejecutar" para probar que todo funcione, si se trata de un solo sitio, esta solo retorna un registro, si cuando se creó la tarea se añadieron 2 o más URL, automáticamente se crea un _"bucle"_ que hace que se genere un registro por cada URL agregado.
+7. Una vez se tengan obtengan los datos requeridos la tarea está lista.
+***
+
+#### 4.3.2 Modificar una tarea de Octoparse
+
+1. Se abre Octoparse. 
+2. Dirigirse al Dashboard.
+3. Entrar en la tarea que se desee modificar.
+4. Si se trata de un campo, en la parte inferior, colocarse sobre la columna, presionar el botón de "Más" y seleccionar una de las opciones, ejemplo reformatear.
+5. Si se trata de añadir un campo nuevo, seleccionar el dato desde el sitio web y presionar la opción de extraer el texto, esto creará una nueva columna.
+6. Si se trata sobre una configuración de la tarea, en la parte superior seleccionar "Configuración". **Acá es donde se configura cada cuanto, donde y cuando se exportan los datos.** 
+7. Una vez se hayan aplicados los cambios, se debe guardar la tarea y como buen práctica, ejecutar la misma para corroborar el correcto funcionamiento.
+***
+
+#### 4.3.3 Cambiar el horario de ejecución de una tarea de Octoparse
+
+1. Se abre Octoparse
+2. Dirigirse al Dashboard.
+3. Hay dos opciones:
+    - Desde esta pestaña, en la línea de la tarea que se desee cambiar el horario, en la columna "Siguiente ejecución" el dato superior indica la fecha y hora que será ejecutada en la nube, se selecciona esta opción y aparece el panel de configuración programada, aplicar el cambio y presionar el botón de "Confirmar".
+    - Entrar en la tarea, en la parte superior seleccionar la opción de "Configuración", en el panel que se muestra seleccionar "Extracción automática", en la sub-sección de "Programar ejecución" en la opción de "Ejecuciones en la nube", presionar el botón de "Editar", aplicar el cambio y presionar el botón de "Confirmar".
+4. En el horario especificado se ejecutará la tarea.
+***
+
+#### 4.3.4 Visualización y análisis de los precios de mercado
+
+1. Abrir la hoja de cálculo llamada [Competitividad][Competitividad].
+2. Seleccionar la pestaña llamada "Comparaciones".
+3. Filtrar por columna el grupo de productos que se requiera analizar.
+4. Analizar la información y tomar las decisiones pertinentes.
+***
+
+#### 4.3.5 Rutina para actualizar el _"corte de productos"_ (importante)
+
+La causa para realizar este flujo consiste en que han sido agregados nuevos productos de Construplaza y sus debidos homólogos a la matriz de [Productos Homólogos][Productos Homólogos], por lo que para analizarlos en la siguiente ejecución programada en la nube y visualizarlos en [Competitividad][Competitividad] se deben seguir a cabalidad los pasos siguientes:
+
+1. Abrir la hoja [Productos Homólogos][Productos Homólogos].
+
+2. Ir a la pestaña "Ordenados A-Z" y eliminar/vaciar todo el contenido que esté acá. 
+
+3. Ir a la pestaña "Homólogos" y seleccionar **todas** las columnas que sean de URLs, es decir, desde "URL Construplaza" hasta la última, copiarlas y pegarlas en la pestaña "Ordenados A-Z" que fue vaciada anteriormente.
+
+4. Una vez pegadas las columnas de URLs de "Homólogos" en "Ordenados A-Z", eliminar los encabezados de las columnas, es decir, que en esta pestaña solo existan URLs.
+
+5. Una vez haya quedado la hoja únicamente con URLs, debe seleccionarse **CADA** columna (correspondiente a una competencia) y con la opción del menú de Google Sheets llamada "Datos", escoger la opción llamada "Ordenar Rango" y presionar la opción llamada "Ordenar rango por **columna __** (De la A a la Z)". Esto hará que se ordenen los datos ascendente y alfabéticamente, de modo que toda celda en blanco que existía se elimine y cada columna corresponda al conjunto de URLs que van a ser asignados a cada tarea en el software de Octoparse, pero antes se debe actualizar [Competitividad][Competitividad] para agregar los nuevos productos.
+
+6. Ir nuevamente a la pestaña "Homólogos" de la hoja [Productos Homólogos][Productos Homólogos], ahora se debe seleccionar **TODO** el contenido de esta, que viene siendo todas las columnas y filas que existan, ya que esto equivale a la famosa "matriz" mencionada a lo largo del documento y copiarla.
+
+7. Teniendo la matriz copiada se debe ir a la hoja [Competitividad][Competitividad].
+
+8. Ir a la pestaña "Homólogos" (como su nombre lo evidencia, es la copia oficial de la pestaña llamada de igual manera de la hoja [Productos Homólogos][Productos Homólogos]) se debe eliminar/vaciar todo el contenido que esté acá, ya que hay una nueva versión de la matriz. 
+
+9. Una vez vaciada la pestaña "Homólogos" se pega todo el contenido que se copió en el paso **6**. Esto hace que gracias a las fórmulas explicadas en el punto 5 de esta documentación técnica todos estos links con la información de cada producto se visualice en el _"cuadro comparativo"_ en la pestaña "Comparaciones" de [Competitividad][Competitividad].
+
+10. Ahora, debido a que se agregaron nuevas líneas en la pestaña "Homólogos" hay que ir a la pestaña "Comparaciones" y crear las líneas al final de la hoja para mostrar estos nuevos registros. Para esto se debe seleccionar la opción desde el menú de Google Sheets que se llama "Quitar filtro", además se debe ubicar y mostrar todas aquellas columnas que se encuentran ocultas.
+
+11. Una vez se haya hecho cada acción del paso anterior, se selecciona **toda** la última línea de la pestaña "Comparaciones" y se copia, de esta manera obtenemos las fórmulas que se encargarán de mostrar los productos posteriormente.
+
+12. Cuando se tenga copiada la línea, a esta pestaña "Comparaciones" se le deben agregar las líneas faltantes de productos que se agregaron previamente a la pestaña "Comparaciones", la cantidad exacta se obtiene restando la cantidad de registros de la pestaña "Homólogos" a la cantidad de registros de esta pestaña "Comparaciones".
+
+13. Una vez se tenga el espacio disponible con las nuevas líneas, se evidencia que estas no muestran ningún registro automáticamente, la razón es que hace falta pegar las fórmulas que se copiaron en el paso **11**, para ello se seleccionan estas líneas vacías y se pegan las formulas. Al realizar este paso con éxito, se va a evidenciar que los nuevos registros de "Homólogos" se muestran en "Comparaciones" listos para ser analizados.
+
+14. En este punto ya se tomo la data de [Productos Homólogos][Productos Homólogos] y se colocó en [Competitividad][Competitividad] de manera que nos encontramos donde ambas hojas de cálculo cumplieron y tienen todo lo necesario para continuar con el flujo y abrir el software de Octoparse.
+
+15. Abrir Octoparse.
+
+16. Ir al Dashboard.
+
+17. En este punto se supone que cada tarea ya tiene un horario programado para ejecutarse, por lo que solo se debe entrar en **CADA** tarea y actualizar los URLs que se van a procesar, para lograr esto, en la parte derecha de la tarea se selecciona el "Bucle de URLs", una vez seleccionado en la parte inferior derecha correspondiente a los ajustes del bucle, en la pestaña "General" se busca la opción que se llame "Ingresar manualmente" y cuando aparezca el panel, ir a la hoja [Productos Homólogos][Productos Homólogos] en la pestaña "Comparaciones" copiar la columna correspondiente a la tarea que se está editando, pegar el conjunto de URLs nuevas en el panel y presionar el botón "Guardar".
+
+18. Una vez se hayan actualizado todas las tareas, en este punto se tiene todo el ambiente listo para que las automatizaciones de cada tarea sean ejecutadas sin problemas y exporten los datos a las pestañas correspondientes en la hoja [Competitividad][Competitividad]. 
+
+**Nota:** Este proceso debe mantenerse como rutina semanal hasta que se tengan incluidos en su totalidad los productos activos de Construplaza con sus respectivos homólogos.
+***
+
+## 5. Desarrollo
+
+### 5.1 Explicación del Código
+
+Este proyecto utiliza dos archivos de código de programación alojados en la opción del menú de Google Sheets de la hoja de cálculo [Competitividad][Competitividad] llamada "Extensiones", la correspondiente a "AppScript", para la limpieza y ordenamiento de los datos. 
+
+Además **cada** celda de la pestaña "Comparaciones" es alimentada por una fórmula, con el fin de obtener los datos correspondientes de cada producto almacenado en las diferentes pestañas, de tal modo que el cuadro comparativo tenga sentido. Todo esto es detallado a continuación:
+
+#### 5.1.1 Implementado en AppScript (extensión de Google Sheets)
+
+1. Para la limpieza de los datos el archivo llamado `borrado.gs` contiene el código que consiste en una función que se encarga de eliminar/vaciar todos los registros de las pestañas en donde Octoparse exporta los datos, para que antes de la próxima exportación, la hoja esté limpia y lista para recibir el nuevo lote de datos. Este código es ejecutado por medio un _"trigger"_ en un horario definido.
+
+```javascript
+// función que se encarga de limpiar/eliminar los datos de las pestañas de cada competencia
+// es ejecutada por medio del activador ("trigger") cuando se cumpla el horario programado
+function borrarDatos() {
+  // variable constante que equivale al objeto de la hoja en donde se van a ejecutar las acciones, en este caso es la hoja activa. 
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Construplaza
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const construplaza = libro.getSheetByName("Construplaza");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  construplaza.getRange(2, 1, construplaza.getLastRow() - 1, construplaza.getLastColumn()).clearContent();
+
+  //EPA
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const epa = libro.getSheetByName("EPA");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  epa.getRange(2, 1, epa.getLastRow() - 1, epa.getLastColumn()).clearContent();
+
+  // El Lagar
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const lagar = libro.getSheetByName("El Lagar");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  lagar.getRange(2, 1, lagar.getLastRow() - 1, lagar.getLastColumn()).clearContent();
+
+  // Brenes
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const brenes = libro.getSheetByName("Brenes");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  brenes.getRange(2, 1, brenes.getLastRow() - 1, brenes.getLastColumn()).clearContent();
+
+  // Novex
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const novex = libro.getSheetByName("Novex");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  novex.getRange(2, 1, novex.getLastRow() - 1, novex.getLastColumn()).clearContent();
+
+  // Colono
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const colono = libro.getSheetByName("Colono");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  colono.getRange(2, 1, colono.getLastRow() - 1, colono.getLastColumn()).clearContent();
+
+  // Capris
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const capris = libro.getSheetByName("CAPRIS");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  capris.getRange(2, 1, capris.getLastRow() - 1, capris.getLastColumn()).clearContent();
+
+  // Ditesa
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const ditesa = libro.getSheetByName("DITESA");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  ditesa.getRange(2, 1, ditesa.getLastRow() - 1, ditesa.getLastColumn()).clearContent();
+
+  // Almacen Mauro
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const mauro = libro.getSheetByName("Almacen Mauro");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  mauro.getRange(2, 1, mauro.getLastRow() - 1, mauro.getLastColumn()).clearContent();
+
+  // Iesa
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const iesa = libro.getSheetByName("IESA");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  iesa.getRange(2, 1, iesa.getLastRow() - 1, iesa.getLastColumn()).clearContent();
+
+  // TecnoFijaciones
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const tecnoFijaciones = libro.getSheetByName("TecnoFijaciones");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  tecnoFijaciones.getRange(2, 1, tecnoFijaciones.getLastRow() - 1, tecnoFijaciones.getLastColumn()).clearContent();
+
+  // Sondel 
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const sondel = libro.getSheetByName("Sondel");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  sondel.getRange(2, 1, sondel.getLastRow() - 1, sondel.getLastColumn()).clearContent();
+
+  // Walmart
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const walmart = libro.getSheetByName("Walmart");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  walmart.getRange(2, 1, walmart.getLastRow() - 1, walmart.getLastColumn()).clearContent();
+
+  // Pequeño Mundo
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const peqMundo = libro.getSheetByName("Peq. Mundo");
+  // cálculo, obtención y limpieza del rango donde se almacenan los datos a eliminar
+  peqMundo.getRange(2, 1, peqMundo.getLastRow() - 1, peqMundo.getLastColumn()).clearContent();
+}
+```
+
+***
+
+2. Para el ordenamiento de los datos el archivo llamado `orden.gs` contiene el código que consiste en una función que se encarga de ordenar todos los registros de las pestañas en donde Octoparse exporta los datos para que después de cada exportación los datos queden ordenados estratégicamente. Este código es ejecutado por medio un _"trigger"_ en un horario definido.
+
+```javascript
+// función que se encarga de ordenar los datos de las pestañas de cada competencia
+// es ejecutada por medio del activador ("trigger") cuando se cumpla el horario programado
+function ordenarAutomatico() {
+  // variable constante que equivale al objeto de la hoja en donde se van a ejecutar las acciones, en este caso es la hoja activa.
+  const libro = SpreadsheetApp.getActiveSpreadsheet();
+
+  // Construplaza
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const construplaza = libro.getSheetByName("Construplaza");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloConstruplaza = construplaza.getRange(2, 1, construplaza.getLastRow() - 1, construplaza.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloConstruplaza.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  construplaza.getRange(2, 1, construplaza.getLastRow() - 1, construplaza.getLastColumn()).setValues(arregloConstruplaza);
+
+  //EPA
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const epa = libro.getSheetByName("EPA");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloEpa = epa.getRange(2, 1, epa.getLastRow() - 1, epa.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloEpa.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  epa.getRange(2, 1, epa.getLastRow() - 1, epa.getLastColumn()).setValues(arregloEpa);
+
+  // El Lagar
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const lagar = libro.getSheetByName("El Lagar");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloLagar = lagar.getRange(2, 1, lagar.getLastRow() - 1, lagar.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloLagar.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  lagar.getRange(2, 1, lagar.getLastRow() - 1, lagar.getLastColumn()).setValues(arregloLagar);
+
+  // Brenes
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const brenes = libro.getSheetByName("Brenes");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloBrenes = brenes.getRange(2, 1, brenes.getLastRow() - 1, brenes.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloBrenes.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  brenes.getRange(2, 1, brenes.getLastRow() - 1, brenes.getLastColumn()).setValues(arregloBrenes);
+
+  // Novex
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const novex = libro.getSheetByName("Novex");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloNovex = novex.getRange(2, 1, novex.getLastRow() - 1, novex.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloNovex.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  novex.getRange(2, 1, novex.getLastRow() - 1, novex.getLastColumn()).setValues(arregloNovex);
+
+  // Colono
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const colono = libro.getSheetByName("Colono");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloColono = colono.getRange(2, 1, colono.getLastRow() - 1, colono.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloColono.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  colono.getRange(2, 1, colono.getLastRow() - 1, colono.getLastColumn()).setValues(arregloColono);
+
+  // Capris
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const capris = libro.getSheetByName("CAPRIS");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloCapris = capris.getRange(2, 1, capris.getLastRow() - 1, capris.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloCapris.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  capris.getRange(2, 1, capris.getLastRow() - 1, capris.getLastColumn()).setValues(arregloCapris);
+
+  // Ditesa
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const ditesa = libro.getSheetByName("DITESA");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloDitesa = ditesa.getRange(2, 1, ditesa.getLastRow() - 1, ditesa.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloDitesa.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  ditesa.getRange(2, 1, ditesa.getLastRow() - 1, ditesa.getLastColumn()).setValues(arregloDitesa);
+
+  // Almacen Mauro
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const mauro = libro.getSheetByName("Almacen Mauro");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloMauro = mauro.getRange(2, 1, mauro.getLastRow() - 1, mauro.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloMauro.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  mauro.getRange(2, 1, mauro.getLastRow() - 1, mauro.getLastColumn()).setValues(arregloMauro);
+
+  // Iesa
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const iesa = libro.getSheetByName("IESA");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloIesa = iesa.getRange(2, 1, iesa.getLastRow() - 1, iesa.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloIesa.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  iesa.getRange(2, 1, iesa.getLastRow() - 1, iesa.getLastColumn()).setValues(arregloIesa);
+
+  // TecnoFijaciones
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const tecnoFijaciones = libro.getSheetByName("TecnoFijaciones");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloTecnoFijaciones = tecnoFijaciones.getRange(2, 1, tecnoFijaciones.getLastRow() - 1, tecnoFijaciones.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloTecnoFijaciones.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  tecnoFijaciones.getRange(2, 1, tecnoFijaciones.getLastRow() - 1, tecnoFijaciones.getLastColumn()).setValues(arregloTecnoFijaciones);
+
+  // Sondel
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const sondel = libro.getSheetByName("Sondel");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloSondel = sondel.getRange(2, 1, sondel.getLastRow() - 1, sondel.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloSondel.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  sondel.getRange(2, 1, sondel.getLastRow() - 1, sondel.getLastColumn()).setValues(arregloSondel);
+
+  // Walmart
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const walmart = libro.getSheetByName("Walmart");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloWalmart = walmart.getRange(2, 1, walmart.getLastRow() - 1, walmart.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloWalmart.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  walmart.getRange(2, 1, walmart.getLastRow() - 1, walmart.getLastColumn()).setValues(arregloWalmart);
+
+  // Pequeño Mundo
+  // variable que obtiene la pestaña específica de cada competencia por medio de su nombre
+  const peqMundo = libro.getSheetByName("Peq. Mundo");
+  // cálculo y obtención del rango donde se almacenan los datos a ordenar
+  const arregloPeqMundo = peqMundo.getRange(2, 1, peqMundo.getLastRow() - 1, peqMundo.getLastColumn()).getValues();
+  // método que se encarga de ejecutar el ordenamiento de los datos por medio de un parámetro dado por una función explicada más adelante
+  arregloPeqMundo.sort(porPrecioAsc);
+  // asignación de los registros ordenados al rango obtenido anteriormente de modo que el ordenamiento se muestre exitosamente
+  peqMundo.getRange(2, 1, peqMundo.getLastRow() - 1, peqMundo.getLastColumn()).setValues(arregloPeqMundo);
+}
+
+// Las siguientes funciones fueron desarrolladas para ordenar los elementos según la columna que se desee validar para ordenar en base a esta
+// Parámetros: 
+// a = es un arreglo conformado por los valores de una fila
+// b = es un arreglo conformado por los valores de la fila posterior a la "a" para compararse entre sí
+
+// La posición del arreglo significa la columna donde está el dato por validar. 
+// (Es un número menos debido a la naturaleza de los arreglos que inician desde la posición 0)
+
+// Esta función valida el dato de la Columna 2 de la pestaña con la posición "a[1]"
+let porPrecioAsc = function (a, b) {
+  if (a[1] > b[1]) { return 1 } // si "a" es mayor que "b" retorna 1, quiere decir que "a" debe moverse abajo de "b"
+  else if (b[1] > a[1]) { return -1 } // si "b" es mayor que "a" retorna -1, quiere decir que "a" debe aparecer antes que "b"
+  return 0 // si no se cumple ninguna de las condiciones retorna 0, quiere decir que no se deben mover los valores ya que su orden está correcto
+}
+
+// Esta función valida el dato de la Columna 6 de la pestaña con la posición "a[5]"
+let porUrlAsc = function (a, b) {
+  if (a[5] > b[5]) { return 1 } // si "a" es mayor que "b" retorna 1, quiere decir que "a" debe moverse abajo de "b"
+  else if (b[5] > a[5]) { return -1 } // si "b" es mayor que "a" retorna -1, quiere decir que "a" debe aparecer antes que "b"
+  return 0 // si no se cumple ninguna de las condiciones retorna 0, quiere decir que no se deben mover los valores ya que su orden está correcto
+}
+
+// Esta función valida el dato de la Columna 5 de la pestaña con la posición "a[5]"
+let porUrlAscCol5 = function (a, b) {
+  if (a[4] > b[4]) { return 1 } // si "a" es mayor que "b" retorna 1, quiere decir que "a" debe moverse abajo de "b"
+  else if (b[4] > a[4]) { return -1 } // si "b" es mayor que "a" retorna -1, quiere decir que "a" debe aparecer antes que "b"
+  return 0 // si no se cumple ninguna de las condiciones retorna 0, quiere decir que no se deben mover los valores ya que su orden está correcto
+}
+```
+
+***
+
+#### 5.1.2 Implementado en la hoja de cálculo "Competitividad"
+
+En la pestaña "Comparaciones" para obtener cada dato respectivo en cada celda que conforma el cuadro comparativo para el estudio de los precios del mercado se utilizó una serie de fórmulas encargadas de retornar el valor que se necesite, cada una de estas es explicada a continuación.
+
+Para un mayor entendimiento esta es la línea del cuadro comparativo que se genera con cada uno de los siguientes puntos detallados:
+
+| Marca    | Dpto.        | Cat.        | Cod.  | Descripción                | Diferencia | Más Bajo  | Construplaza | EPA   | El Lagar | Brenes | Novex | Colono | CAPRIS | DITESA | Mauro | IESA | TecnoFija. | Sondel | Walmart | Peq. Mundo |
+| :------- | :----------- | :---------- | :---: | :------------------------- | :--------: | --------: | -----------: | ----: | -------: | -----: | ----: | -----: | -----: | -----: | ----: | ---: | ---------: | -----: | ------: | ---------: |
+| 3-in-one | Herramientas | Lubricantes | 18864 | Aceite 3-en-1 88 ml (3 oz) | 1%         | [1,490](https://www.colonoconstruccion.com/Store/product/7103003) | [1,500](https://www.construplaza.com/Construplaza/Producto?articulo=18864)    | 1,495 | -        | -      | -     | 1,490  | -      | -      | -     | -    | -          | -      | -       | -          |
+
+1. Para la columna "Marca" se utilizó la siguiente fórmula:
+
+```
+='Homólogos'!A2
+```
+
+Obtiene el valor de texto referente a la marca del producto almacenado en la pestaña "Homólogos" en la fila `2` de la columna `A`. El valor `2` cambia sucesivamente para obtener el valor de cada producto.
+***
+
+2. Para la columna "Dpto." que significa "Departamento" se utilizó la siguiente fórmula:
+
+```
+='Homólogos'!B2
+```
+
+Obtiene el valor de texto referente al departamento del producto almacenado en la pestaña "Homólogos" en la fila `2` de la columna `B`. El valor `2` cambia sucesivamente para obtener el valor de cada producto.
+***
+
+3. Para la columna "Cat." que significa "Categoría" se utilizó la siguiente fórmula:
+
+```
+='Homólogos'!C2
+```
+
+Obtiene el valor de texto referente a la categoría del producto almacenado en la pestaña "Homólogos" en la fila `2` de la columna `C`. El valor `2` cambia sucesivamente para obtener el valor de cada producto.
+***
+
+4. Para la columna "Cod." que significa "Código" se utilizó la siguiente fórmula:
+
+```
+='Homólogos'!D2
+```
+
+Obtiene el valor de texto referente al código del producto almacenado en la pestaña "Homólogos" en la fila `2` de la columna `D`. El valor `2` cambia sucesivamente para obtener el valor de cada producto.
+***
+
+5. Para la columna "Descripción" se utilizó la siguiente fórmula:
+
+```
+='Homólogos'!E2
+```
+
+Obtiene el valor de texto referente a la descripción del producto almacenado en la pestaña "Homólogos" en la fila `2` de la columna `E`. El valor `2` cambia sucesivamente para obtener el valor de cada producto.
+***
+
+6. Para la columna "Diferencia" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(H2/MIN(I2:U2)-1,"")
+```
+
+Esta globaliza el resultado por medio del método `IFERROR()`el cual si la operación genera algún error asigna un espacio vacío (`""`) a la celda, de lo contrario, obtiene el valor mínimo con el método `MIN()` del rango entre la columna `I` y la `U` de la fila `2`, el cual es donde se encuentran todos los precios homólogos de este producto, al obtener el precio mínimo de las competencias se divide (`/`) entre el valor de la celda `H2`, equivalente al precio del producto en Construplaza, a esta división se le resta una unidad (`-1`) para generar un valor entre 0 y 1, de modo que al convertir la columna en formato porcentual, genere el porcentaje de diferencia que se tiene entre el precio del producto de Construplaza y el homólogo con el precio más bajo.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`MIN()`](https://support.google.com/docs/answer/3094017)
+
+- Esta columna tiene un formato condicional en la hoja de cálculo, la cual dependiendo del valor de la diferencia, el fondo lo pinta en negro, amarillo o blanco:
+    - Negro significa que el producto no tiene homólogos en ningún otra competencia.
+    - Amarillo significa que el precio de Construplaza está más elevado que al menos una competencia.
+    - Blanco significa que el precio de Construplaza es el más competente, es decir, más barato entre las competencias.
+***
+
+7. Para la columna "Más Bajo" se desarrolló la siguiente fórmula:
+
+```
+=HYPERLINK(INDIRECT(CONCATENATE("'Homólogos'!", CHAR(CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))) - 2) , ROW())), MIN(H2:U2))
+```
+
+Su objetivo principal consiste en encontrar el precio _más bajo_ entre las competencias incluyendo a Construplaza pero además con la capacidad de funcionar como vínculo para dirigirse al sitio web de la competencia para corroborar el porqué es el precio más bajo. Para explicar su lógica se desgloza a continuación:
+- `MIN(H2:U2)`: Obtiene el valor mínimo de las celdas del rango entre las columnas `H` y `U` de la fila `2`. 
+    - Para este ejemplo, su resultado es: `1,490`.
+- `MATCH(MIN(H2:U2), H2:U2, 0)`: Busca la _posición_ del valor mínimo (calculado en el paso anterior) dentro del rango `H2:U2`.
+    - Para este ejemplo, su resultado es: `6`.
+- `INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))`: Toma el rango `H2:U2` y devuelve el _valor_ en texto de la posición que se calculo en el paso anterior.
+    - Para este ejemplo, su resultado es: `1,490`.
+- `COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0)))`: Devuelve el _número de la columna_ en la que se encuentra el valor mínimo encontrado con `MATCH()` en el paso anterior del rango  `H2:U2`.
+    - Para este ejemplo, su resultado es: `13`.
+- `ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4)`: Devuelve una _referencia_ a una celda en la fila `1` y la columna correspondiente al valor mínimo. El número `4` utilizado como último parámetro de la función equivale al formato de la referencia para que sea devuelto como _letra_ de columna y _número_ de fila.
+    - Para este ejemplo, su resultado es: `M1`.
+- `LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))`: Extrae el primer carácter del resultado de `ADDRESS` del paso anterior, el cual corresponde a la letra de la columna.
+    - Para este ejemplo, su resultado es: `M`.
+- `CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4)))`: Convierte un carácter a su código ASCII "American Standard Code for Information Interchange" traducido como "Código Estándar Estadounidense para el Intercambio de Información". La razón por la que se utiliza esta lógica consiste en que la _letra_ de la columna obtenida en el paso anterior, no coincide con la _letra_ de la columna en la pestaña de "Homólogos" donde se encuentra el URL correspondiente al producto con el precio más bajo, ya que "Comparaciones" tiene un orden de columnas distinto al de "Homólogos" por lo que si se hacía la referencia a la misma columna retornaba el valor erróneo ya que no eran semejantes.
+    - Para este ejemplo, su resultado es: `77`.
+- `CHAR(CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))) - 2)`: Convierte el código ASCII generado en el paso anterior en el carácter equivalente al número menos dos unidades (`- 2`), esto hace que la referencia busque el URL dos columnas hacia la izquierda donde se encuentra indicado.
+    - Para este ejemplo, su resultado es: `K`.
+- `CONCATENATE("'Homólogos'!", CHAR(CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))) - 2) , ROW())`: Construye una referencia a una celda de la pestaña "Homólogos" con tres partes, una el prefijo `'Homólogos!'`, dos, la _letra_ de la columna obtenida en el paso anterior y tres, con `ROW()` el número de la _fila_ actual.
+    - Para este ejemplo, su resultado es: `'Homólogos'!K2`.
+- `INDIRECT(CONCATENATE("'Homólogos'!", CHAR(CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))) - 2) , ROW()))`: El resultado del paso anterior es un texto plano, es decir, aunque ya se tenga la referencia de la celda de la pestaña que contiene el link respectivo en "Homólogos" del producto _más bajo_ no funciona, por lo que por medio de esta función se convierte en una referencia real que permite que la fórmula acceda a la celda.
+    - Para este ejemplo, su resultado es: `='Homólogos'!K2`.
+- `HYPERLINK(INDIRECT(CONCATENATE("'Homólogos'!", CHAR(CODE(LEFT(ADDRESS(1, COLUMN(INDEX(H2:U2, MATCH(MIN(H2:U2), H2:U2, 0))), 4))) - 2) , ROW())), MIN(H2:U2))`: Por último, por medio de la función `HYPERLINK()` se crea un enlace a la celda que contiene el URL del producto más bajo, y el texto que dirige a este enlace se le asigna el valor obtenido en el primer punto desglozado equivalente al precio mínimo `MIN()` de todos los homólogos entre el rango `H2:U2`.
+    - Para este ejemplo, su resultado es: [1,490](https://www.colonoconstruccion.com/Store/product/7103003).
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`HYPERLINK()`](https://support.google.com/docs/answer/3093313)
+    - [`INDIRECT()`](https://support.google.com/docs/answer/3093377)
+    - [`CONCATENATE()`](https://support.google.com/docs/answer/3094123)
+    - [`CHAR()`](https://support.google.com/docs/answer/3094120)
+    - [`CODE()`](https://support.google.com/docs/answer/3094122)
+    - [`LEFT()`](https://support.google.com/docs/answer/3094079)
+    - [`ADDRESS()`](https://support.google.com/docs/answer/3093308)
+    - [`COLUMN()`](https://support.google.com/docs/answer/3093373)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+    - [`MIN()`](https://support.google.com/docs/answer/3094017)
+    - [`ROW()`](https://support.google.com/docs/answer/3093316)
+
+***
+
+8. Para la columna "Construplaza" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR( IF(ISBLANK(INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0))) , "-" , HYPERLINK('Homólogos'!F2, INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0))) ), "-")
+```
+
+Su objetivo principal consiste en obtener el precio del producto de Construplaza desde los datos exportados por Octoparse y convertirlo en vínculo de manera que se dirija al sitio web del mismo. Se desgloza a continucación para su explicación:
+- `MATCH('Homólogos'!F2, Construplaza!F:F, 0)`: Se utiliza en dos ocasiones, busca el valor de la celda `F2` en la pestaña "Homólogos" dentro de la columna `F` de la pestaña "Construplaza" y retorna el valor del mismo. El tercer parámetro equivalente a `0` indica que la búsqueda debe ser exacta. 
+    - Para este ejemplo, su resultado es: `5,304`.
+- `INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0))`: Se utiliza en dos ocasiones, toma la fila devuelta por `MATCH()` en el paso anterior y devuelve el valor correspondiente de la columna `B` de la pestaña de "Construplaza".
+    - Para este ejemplo, su resultado es: `1,500`.
+- `ISBLANK(INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0)))`: Comprueba si el valor devuelto por en el paso anterior está en blanco, devuelve `true` o `false`.
+    - Para este ejemplo, su resultado es: `false`.
+- `IF(ISBLANK(INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0))) , "-" , HYPERLINK('Homólogos'!F2, INDEX(Construplaza!B:B, MATCH('Homólogos'!F2, Construplaza!F:F, 0))) )`: Acá se valida la respuesta del paso anterior, si este devuelve `true` entonces la celda le asigna un guión (`-`), pero si es `false` se genera un vínculo que usa el valor de `'Homólogos'!F2` como destino y el valor de la columna `B` de la pestaña "Construplaza" como texto visible, obtenido por `INDEX()`.
+    - Para este ejemplo, su resultado es: [1,500](https://www.construplaza.com/Construplaza/Producto?articulo=18864).
+- `IFERROR(..., "-")`: Por último, todas estas funciones son globalizadas en un `IFERROR()` de modo que si surge algún error a la celda se le asigne un guión (`"-"`).
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`IF()`](https://support.google.com/docs/answer/3093364)
+    - [`ISBLANK()`](https://support.google.com/docs/answer/3093290)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+    - [`HYPERLINK()`](https://support.google.com/docs/answer/3093313)
+***
+
+9. Para la columna "EPA" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(EPA!B:B, MATCH('Homólogos'!G2, EPA!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!G2, EPA!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!G2` en toda la columna `F` de la pestaña de "EPA", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `609`.
+- `INDEX(EPA!B:B, MATCH('Homólogos'!G2, EPA!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "EPA" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `1,495`.
+- `=IFERROR(INDEX(EPA!B:B, MATCH('Homólogos'!G2, EPA!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "EPA" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `1,495`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+10. Para la columna "El Lagar" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX('El Lagar'!B:B, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!H2` en toda la columna `F` de la pestaña de "El Lagar", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX('El Lagar'!B:B, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "El Lagar" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX('El Lagar'!B:B, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "El Lagar" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+11. Para la columna "Brenes" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Brenes!B:B, MATCH('Homólogos'!I2, Brenes!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!I2, Brenes!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!I2` en toda la columna `F` de la pestaña de "Brenes", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(Brenes!B:B, MATCH('Homólogos'!I2, Brenes!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Brenes" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(Brenes!B:B, MATCH('Homólogos'!I2, Brenes!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Brenes" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+12. Para la columna "Novex" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Novex!B:B, MATCH('Homólogos'!J2, Novex!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!J2, Novex!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!J2` en toda la columna `F` de la pestaña de "Novex", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(Novex!B:B, MATCH('Homólogos'!J2, Novex!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Novex" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(Novex!B:B, MATCH('Homólogos'!J2, Novex!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Novex" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+13. Para la columna "Colono" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Colono!B:B, MATCH('Homólogos'!K2, Colono!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!K2, Colono!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!K2` en toda la columna `F` de la pestaña de "Colono", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `526`.
+- `INDEX(Colono!B:B, MATCH('Homólogos'!K2, Colono!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Colono" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `1,490`.
+- `=IFERROR(INDEX(Colono!B:B, MATCH('Homólogos'!K2, Colono!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Colono" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `1,490`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+14. Para la columna "CAPRIS" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(CAPRIS!B:B, MATCH('Homólogos'!L2, CAPRIS!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!L2, CAPRIS!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!L2` en toda la columna `F` de la pestaña de "CAPRIS", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(CAPRIS!B:B, MATCH('Homólogos'!L2, CAPRIS!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "CAPRIS" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(CAPRIS!B:B, MATCH('Homólogos'!L2, CAPRIS!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "CAPRIS" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+15. Para la columna "DITESA" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(DITESA!B:B, MATCH('Homólogos'!M2, DITESA!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!M2, DITESA!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!M2` en toda la columna `F` de la pestaña de "DITESA", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(DITESA!B:B, MATCH('Homólogos'!M2, DITESA!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "DITESA" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(DITESA!B:B, MATCH('Homólogos'!M2, DITESA!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "DITESA" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+16. Para la columna "Mauro" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX('Almacen Mauro'!B:B, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!N2` en toda la columna `F` de la pestaña de "Almacen Mauro", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX('Almacen Mauro'!B:B, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Almacen Mauro" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX('Almacen Mauro'!B:B, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Almacen Mauro" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Además, esta columna tiene un formato condicional, si el precio del producto obtenido tiene una rebaja o descuento, la celda es pintada de color naranja.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+17. Para la columna "IESA" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(IESA!B:B, MATCH('Homólogos'!O2, IESA!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!O2, IESA!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!O2` en toda la columna `F` de la pestaña de "IESA", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(IESA!B:B, MATCH('Homólogos'!O2, IESA!F:F, 0))`:  Retorna el valor en texto de la columna `B` de la pestaña de "IESA" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(IESA!B:B, MATCH('Homólogos'!O2, IESA!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "IESA" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+18. Para la columna "TecnoFija." se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(TecnoFijaciones!B:B, MATCH('Homólogos'!P2, TecnoFijaciones!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!P2, TecnoFijaciones!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!P2` en toda la columna `F` de la pestaña de "TecnoFijaciones", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(TecnoFijaciones!B:B, MATCH('Homólogos'!P2, TecnoFijaciones!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "TecnoFijaciones" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(TecnoFijaciones!B:B, MATCH('Homólogos'!P2, TecnoFijaciones!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "TecnoFijaciones" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+19. Para la columna "Sondel" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Sondel!B:B, MATCH('Homólogos'!Q2, Sondel!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!Q2, Sondel!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!Q2` en toda la columna `F` de la pestaña de "Sondel", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(Sondel!B:B, MATCH('Homólogos'!Q2, Sondel!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Sondel" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(Sondel!B:B, MATCH('Homólogos'!Q2, Sondel!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Sondel" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+20. Para la columna "Walmart" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Walmart!B:B, MATCH('Homólogos'!R2, Walmart!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!R2, Walmart!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!R2` en toda la columna `F` de la pestaña de "Walmart", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX(Walmart!B:B, MATCH('Homólogos'!R2, Walmart!F:F, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Walmart" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX(Walmart!B:B, MATCH('Homólogos'!R2, Walmart!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Walmart" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+21. Para la columna "Peq. Mundo" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX('Peq. Mundo'!B:B, MATCH('Homólogos'!S2, 'Peq. Mundo'!E:E, 0)), "-")
+```
+
+- `MATCH('Homólogos'!S2, 'Peq. Mundo'!E:E, 0)`: Busca el URL de la celda de `'Homólogos'!S2` en toda la columna `F` de la pestaña de "Peq. Mundo", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `INDEX('Peq. Mundo'!B:B, MATCH('Homólogos'!S2, 'Peq. Mundo'!E:E, 0))`: Retorna el valor en texto de la columna `B` de la pestaña de "Peq. Mundo" en el número de fila encontrado en el paso anterior.
+    - Para este ejemplo, su resultado es: `Error: No se encontró el valor “” cuando se evaluó MATCH`.
+- `=IFERROR(INDEX('Peq. Mundo'!B:B, MATCH('Homólogos'!S2, 'Peq. Mundo'!E:E, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Peq. Mundo" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia, por lo que le asigna un guión (`-`) a la celda.
+    - Para este ejemplo, su resultado es: `-`.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+Para identificar en algunas competencias que el precio obtenido tras el raspado web corresponde a un producto en rebaja, oferta, promoción, liquidación o tenga alguna etiqueta especial, se desarrolló también una funcionalidad (mencionada en algunos de los puntos anteriores) que diferencia el formato de una celda por su color naranja de fondo donde significa que ese precio tiene una etiqueta especial para ser considerado a la hora del estudio de precios para ese producto. 
+
+Para esto se desarrollaron estas columnas en la hoja [Competitividad][Competitividad], las cuales existen pero se ocultan a propósito ya que solo ocupamos su contenido para aplicar el formato condicional que brinda Google Sheets.
+
+| EPA (tag)   | El Lagar (tag) | Brenes (tag) | Novex (%) | CAPRIS (tag) | Mauro (tag) |
+| :---------: | :------------: | :----------: | --------: | :----------: | :---------: |
+| Liquidación | Oferta         | Oferta	      | 20        | Liquidación  | Oferta      |
+| -           | -              | -	          | -         | -            | -           |
+
+22. Para la columna "EPA (tag)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(EPA!G:G, MATCH('Homólogos'!G2, EPA!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!G2, EPA!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!G2` en toda la columna `F` de la pestaña de "EPA", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX(EPA!G:G, MATCH('Homólogos'!G2, EPA!F:F, 0))`: Retorna el valor en texto de la columna `G` de la pestaña de "EPA" en el número de fila encontrado en el paso anterior.
+- `=IFERROR(INDEX(EPA!G:G, MATCH('Homólogos'!G2, EPA!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "EPA" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no cuenta con una etiqueta que demuestre que tiene un precio especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+23. Para la columna "El Lagar (tag)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX('El Lagar'!G:G, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!H2` en toda la columna `F` de la pestaña de "El Lagar", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX('El Lagar'!G:G, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0))`: Retorna el valor en texto de la columna `G` de la pestaña de "El Lagar" en el número de fila encontrado en el paso anterior.
+- `=IFERROR(INDEX('El Lagar'!G:G, MATCH('Homólogos'!H2, 'El Lagar'!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "El Lagar" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no cuenta con una etiqueta que demuestre que tiene un precio especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+24. Para la columna "Brenes (tag)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Brenes!G:G, MATCH('Homólogos'!I2, Brenes!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!I2, Brenes!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!I2` en toda la columna `F` de la pestaña de "Brenes", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX(Brenes!G:G, MATCH('Homólogos'!I2, Brenes!F:F, 0))`: Retorna el valor en texto de la columna `G` de la pestaña de "Brenes" en el número de fila encontrado en el paso anterior.
+- `=IFERROR(INDEX(Brenes!G:G, MATCH('Homólogos'!I2, Brenes!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Brenes" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no cuenta con una etiqueta que demuestre que tiene un precio especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+25. Para la columna "Novex (%)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(Novex!G:G, MATCH('Homólogos'!J2, Novex!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!J2, Novex!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!J2` en toda la columna `F` de la pestaña de "Novex", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX(Novex!G:G, MATCH('Homólogos'!J2, Novex!F:F, 0))`: Retorna el número del porcentaje de descuento del producto de la columna `G` de la pestaña de "Novex" en el número de fila encontrado en el paso anterior. 
+- `=IFERROR(INDEX(Novex!G:G, MATCH('Homólogos'!J2, Novex!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Novex" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no tiene un descuento especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+26. Para la columna "CAPRIS (tag)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX(CAPRIS!G:G, MATCH('Homólogos'!L2, CAPRIS!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!L2, CAPRIS!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!L2` en toda la columna `F` de la pestaña de "CAPRIS", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX(CAPRIS!G:G, MATCH('Homólogos'!L2, CAPRIS!F:F, 0))`: Retorna el valor en texto de la columna `G` de la pestaña de "CAPRIS" en el número de fila encontrado en el paso anterior.
+- `=IFERROR(INDEX(CAPRIS!G:G, MATCH('Homólogos'!L2, CAPRIS!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "CAPRIS" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no cuenta con una etiqueta que demuestre que tiene un precio especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+27. Para la columna "Mauro (tag)" se desarrolló la siguiente fórmula:
+
+```
+=IFERROR(INDEX('Almacen Mauro'!G:G, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)), "-")
+```
+
+- `MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)`: Busca el URL de la celda de `'Homólogos'!N2` en toda la columna `F` de la pestaña de "Almacen Mauro", donde por medio del `0` valida que coincida exactamente y si lo encuentra retorna la posición de la _fila_.
+- `INDEX('Almacen Mauro'!G:G, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0))`: Retorna el valor en texto de la columna `G` de la pestaña de "Almacen Mauro" en el número de fila encontrado en el paso anterior.
+- `=IFERROR(INDEX('Almacen Mauro'!G:G, MATCH('Homólogos'!N2, 'Almacen Mauro'!F:F, 0)), "-")`: Si los pasos anteriores no encontraron ninguna coincidencia, significa que en la pestaña de "Almacen Mauro" el lote de datos no contiene el producto homólogo de Construplaza en esta competencia o el producto no cuenta con una etiqueta que demuestre que tiene un precio especial, por lo que le asigna un guión (`-`) a la celda.
+
+- Documentación de los métodos de Google Sheets utilizados:
+    - [`IFERROR()`](https://support.google.com/docs/answer/3093304)
+    - [`INDEX()`](https://support.google.com/docs/answer/3098242)
+    - [`MATCH()`](https://support.google.com/docs/answer/3093378)
+***
+
+## 6. Implementación
+
+### 6.1 Guía de Instalación
+
+Para acceder a las hojas de cáclulo:
+
+- Entrar al enlace de la misma y solicitar acceso.
+
+Para realizar algún cambio relacionado al horario de las ejecuciones y tareas de Octoparse:
+
+- Desde un computador con sistema operativo Windows o Mac con acceso a internet dirigirse al siguiente enlace: [Descargar Octoparse](https://www.octoparse.es/download).
+- Descargar la última versión disponible.
+- Una vez se haya instalado, iniciar sesión con los credenciales respectivos y listo.
+
+## 7. Pruebas
+
+### 7.1 Estrategia de Pruebas
+
+Analizar un caso de uso donde el cambio solicitado tenga efecto y realizar los cambios necesarios para evidenciar el correcto funcionamiento.
+
+### 7.2 Casos de Prueba
+
+Lista de casos de prueba diseñados:
+
+1. **Prueba 1:** Diferenciación del color de fondo de una celda donde el precio de la competencia tenga un precio especial. Para esto se realizó lo siguiente:
+    - Se creó un campo adicional en la tarea de Octoparse de la competencia que identifica alguna etiqueta que demuestre que se trata sobre un precio especial. (Captura 1)
+    - Una vez la ejecución devuelva ese dato en una nueva columna, gracias al formato condicional de Google Sheets se hace una condición que lo valide. (Captura 2)
+    - Lo anterior solo se refleja en la pestaña de la competencia, pero no en la pestaña de "Comparaciones", por lo que para esto se crearon las columnas explicadas en el punto 5.1.2 de este documento, a partir del punto 22. (Captura 3)
+    - Una vez se haya obtenido el dato en la hoja de las comparaciones, se aplica el formato condicional y de esta manera se logra visualizar la diferenciación. (Captura 4)
+
+### 7.3 Resultados de Pruebas
+
+Resumen de los resultados obtenidos:
+
+1. Prueba 1 - Captura 1: Nuevo campo en tarea de Octoparse.
+
+![Captura 1](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/Captura1.png)
+
+2. Prueba 1 - Captura 2: Formato condicional en pestaña de competencia.
+
+![Captura 2](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/Captura2.png)
+
+3. Prueba 1 - Captura 3: Nueva columna en "Comparaciones".
+
+![Captura 3](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/Captura3.png)
+
+3. Prueba 1 - Captura 4: Formato condicional en pestaña "Comparaciones".
+
+![Captura 4](https://github.com/harleycm91/PruebaDoc/blob/main/DocSpace/WebScraping/Captura4.png)
+
+## 8. Mantenimiento
+
+### 8.1 Estrategia de Mantenimiento
+
+Plan para posibles mantenimientos del sistema:
+
+- Debido al propósito del proyecto, los posibles mantenimientos fueron explicados paso a paso en los puntos 4.3.2, 4.3.3 y 4.3.5 de este documento.
+
+## 9. Seguridad
+
+### 9.1 Seguridad utilizada
+
+- **Autenticación de Google:** Las hojas de cáculo creadas para este proyecto son únicamente accesibles para los usuarios respectivos a los que se le compartió.
+- **Cuenta de Octoparse:** Para acceder al software de Octoparse es un requisito poseer una cuenta para visualizar las tareas y configuraciones de la misma.
+
+## 10. Anexos
+
+### 10.1 Glosario de Términos
+
+Definición de términos técnicos utilizados:
+
+- _"Raspado Web"_, _"raspado de información"_: obtención de datos estructurados desde un sitio web.
+- _"competencia"_, _"competidores"_: empresas que venden los mismos productos que Construplaza.
+- _"precios del mercado"_: comparación entre el precio que se ofrece en Construplaza versus el de sus competidores.
+- _"productos homólogos"_: producto en sitio web competidor que tiene las mismas especificaciones, como dimensiones y cantidad, que ofrece Construplaza.
+- _"trigger"_: lanzar una ejecución de un proceso de acuerdo a un evento o horaria establecido.
+- _"XPath"_: (XML Path Language) es un lenguaje usado para localizar y seleccionar partes específicas dentro de un documento XML o HTML.
+- _"normalizar"_: transformar un dato de tal manera que se ajuste a las necesidades.
+- _"bucle"_: ejecución de la tarea desarrollada en cada URL agregado.
+- _"corte de productos"_: en Construplaza existen más de 30.000 productos, desde que se empezó el proyecto se han ido agregando cada uno de estos por lotes hasta llegar a su totalidad.
+- _"columna"_: dato que se encuentra en el eje Y, es decir, de forma vertical en una tabla.
+- _"fila"_: dato que se encuentra en el eje X, es decir, de forma horizontal en una tabla.
+- _"posición"_: número de fila donde se encuentre un valor.
+- _"hoja"_: hoja de cálculo de Google Sheets que contiene un conjunto de pestañas.
+- _"pestaña"_: es una hoja hija de una hoja de cálculo de Google Sheets.
+
+### 10.2 Referencias
+
+- [Descarga de Octoparse](https://www.octoparse.es/download)
+- [Tutorial para exportar a Google Sheets desde Octoparse](https://helpcenter.octoparse.com/es/articles/6696879-exportar-datos-a-google-sheets)
+- [Documentación de la lista de funciones de Google Sheets](https://support.google.com/docs/table/25273?hl=en-419)
+
+## 11. Bitácora de Documentación
+
+Registro de todas las modificaciones realizadas al documento:
+
+~~~
+2024-10-14 - Norberth Fitoria - Se crea este documento para la documentacion del proyecto.
+
+2024-10-14 - Norberth Fitoria - Inicio del desarrollo del contenido del documento.
+
+2024-10-21 - Norberth Fitoria - Se envía este documento para revisión por parte de Harley Castro.
+
+yyyy-mm-dd - Nombre Apellido - Descripcion
+~~~
